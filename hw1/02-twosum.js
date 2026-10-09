@@ -2,7 +2,7 @@
 
 Problem:
 
-You are given an array of integers 'nums' and an integer 'target', write a function that returns indices of the two 
+You are given an array of integers 'nums' and an integer 'target', write a function that returns indices of the two
 numbers such that they add up to target.
 
 Example 1:
@@ -21,4 +21,23 @@ Example 3:
 Input: nums = [3,3], target = 6
 Output: [0,1]
 
-**/
+*/
+
+const twoSum = function twoSum(nums, target) {
+  for (let i = 0; i < nums.length; i += 1) {
+    for (let j = i + 1; j < nums.length; j += 1) {
+      if (nums[i] + nums[j] === target) {
+        return [i, j];
+      }
+    }
+  }
+
+  return [];
+};
+
+console.log('Input: nums = [2,7,11,15], target = 9');
+console.log(`Output: ${JSON.stringify(twoSum([2, 7, 11, 15], 9))}`);
+console.log('Input: nums = [3,2,4], target = 6');
+console.log(`Output: ${JSON.stringify(twoSum([3, 2, 4], 6))}`);
+console.log('Input: nums = [3,3], target = 6');
+console.log(`Output: ${JSON.stringify(twoSum([3, 3], 6))}`);
