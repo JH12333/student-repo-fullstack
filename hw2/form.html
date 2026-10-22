@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Form Exercise</title>
+  </head>
+  <body>
+    <form action="/submit" method="POST">
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required />
+      </div>
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      <div>
+        <label for="comments">Comments:</label>
+        <textarea id="comments" name="comments" style="vertical-align: top"></textarea>
+      </div>
+      <div>
+        <label for="newsletter">Newsletter:</label>
+        <input type="checkbox" id="newsletter" name="newsletter" value="yes" />
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>

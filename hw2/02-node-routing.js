@@ -1,4 +1,5 @@
 const http = require('http');
+
 const port = process.env.PORT || 5001;
 
 // http://localhost:5001/welcome should return a status code 200 with a welcome message of your choice in html format
@@ -13,17 +14,59 @@ const port = process.env.PORT || 5001;
 
 const server = http.createServer((req, res) => {
   const routes = [
-    'welcome',
-    'redirect',
-    'redirected',
-    'cache',
-    'cookie',
-    'other',
+    {
+      path: '/',
+      status: 200,
+      headers: { 'Content-Type': 'text/html' },
+      body: 'Node Routing Exercise',
+    },
+    {
+      path: '/welcome',
+      status: 200,
+      headers: { 'Content-Type': 'text/html' },
+      body: '<h1>Welcome!</h1>',
+    },
+    {
+      path: '/redirect',
+      status: 302,
+      headers: { Location: '/redirected' },
+      body: '',
+    },
+    {
+      path: '/redirected',
+      status: 200,
+      headers: { 'Content-Type': 'text/html' },
+      body: '<h1>You have been redirected!</h1>',
+    },
+    {
+      path: '/cache',
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html',
+        'Cache-Control': 'max-age=86400',
+      },
+      body: '<p>this resource was cached</p>',
+    },
+    {
+      path: '/cookie',
+      status: 200,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Set-Cookie': 'hello=world',
+      },
+      body: 'cookies… yummm',
+    },
   ];
+  const route = routes.find((item) => item.path === req.url);
 
-  res.writeHead(200, { 'Content-Type': 'text/html' });
-  res.write('Node Routing Exercise');
-  res.end();
+  if (!route) {
+    res.writeHead(404, { 'Content-Type': 'text/html' });
+    res.end('<h1>404 - page not found</h1>');
+    return;
+  }
+
+  res.writeHead(route.status, route.headers);
+  res.end(route.body);
 });
 
 server.listen(port, () => {
