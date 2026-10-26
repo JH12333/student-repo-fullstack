@@ -12,51 +12,52 @@ const port = process.env.PORT || 5001;
 
 // For other routes, such as http://localhost:5001/other, this exercise should return a status code 404 with '404 - page not found' in html format
 
+const routes = [
+  {
+    path: '/',
+    status: 200,
+    headers: { 'Content-Type': 'text/html' },
+    body: 'Node Routing Exercise',
+  },
+  {
+    path: '/welcome',
+    status: 200,
+    headers: { 'Content-Type': 'text/html' },
+    body: '<h1>Welcome!</h1>',
+  },
+  {
+    path: '/redirect',
+    status: 302,
+    headers: { Location: '/redirected' },
+    body: '',
+  },
+  {
+    path: '/redirected',
+    status: 200,
+    headers: { 'Content-Type': 'text/html' },
+    body: '<h1>You have been redirected!</h1>',
+  },
+  {
+    path: '/cache',
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html',
+      'Cache-Control': 'max-age=86400',
+    },
+    body: '<p>this resource was cached</p>',
+  },
+  {
+    path: '/cookie',
+    status: 200,
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Set-Cookie': 'hello=world',
+    },
+    body: 'cookies… yummm',
+  },
+];
+
 const server = http.createServer((req, res) => {
-  const routes = [
-    {
-      path: '/',
-      status: 200,
-      headers: { 'Content-Type': 'text/html' },
-      body: 'Node Routing Exercise',
-    },
-    {
-      path: '/welcome',
-      status: 200,
-      headers: { 'Content-Type': 'text/html' },
-      body: '<h1>Welcome!</h1>',
-    },
-    {
-      path: '/redirect',
-      status: 302,
-      headers: { Location: '/redirected' },
-      body: '',
-    },
-    {
-      path: '/redirected',
-      status: 200,
-      headers: { 'Content-Type': 'text/html' },
-      body: '<h1>You have been redirected!</h1>',
-    },
-    {
-      path: '/cache',
-      status: 200,
-      headers: {
-        'Content-Type': 'text/html',
-        'Cache-Control': 'max-age=86400',
-      },
-      body: '<p>this resource was cached</p>',
-    },
-    {
-      path: '/cookie',
-      status: 200,
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Set-Cookie': 'hello=world',
-      },
-      body: 'cookies… yummm',
-    },
-  ];
   const route = routes.find((item) => item.path === req.url);
 
   if (!route) {

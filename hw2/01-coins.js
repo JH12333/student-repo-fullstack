@@ -9,7 +9,6 @@ const calculateChange = function calculateChange(amount) {
     return `$${amount} ==> Error: the number is too large`;
   }
 
-  let cents = Math.round(amount * 100);
   const coins = [
     { value: 100, singular: 'dollar', plural: 'dollars' },
     { value: 25, singular: 'quarter', plural: 'quarters' },
@@ -18,6 +17,7 @@ const calculateChange = function calculateChange(amount) {
     { value: 1, singular: 'penny', plural: 'pennies' },
   ];
   const result = [];
+  let cents = Math.round(amount * 100);
 
   coins.forEach((coin) => {
     const count = Math.floor(cents / coin.value);
@@ -39,10 +39,28 @@ console.log(calculateChange(0.16));
 console.log(calculateChange(150.11));
 // $150.11 ==> Error: the number is too large
 
-// Add additional test cases here
+// Additional test cases
+
+// verifies the fallback output
 console.log(calculateChange(0));
+// $0 ==> 0 pennies
+
+// verifies singular naming
 console.log(calculateChange(0.01));
+// $0.01 ==> 1 penny
+
+// verifies correct coin distribution
 console.log(calculateChange(0.99));
+// $0.99 ==> 3 quarters, 2 dimes, 4 pennies
+
+// verifies no unnecessary smaller denominations
 console.log(calculateChange(1));
+// $1 ==> 1 dollar
+
+// verifies input validation
 console.log(calculateChange(-1));
+// $-1 ==> Error: invalid amount
+
+// verifies the upper boundary
 console.log(calculateChange(100));
+// $100 ==> 100 dollars
