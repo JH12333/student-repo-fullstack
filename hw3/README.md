@@ -1,4 +1,6 @@
-## Exercises
+# HW3 - Full Stack Frameworks and Libraries
+
+## Tutorials
 
 ### 1. React - Tic-Tac-Toe
 
