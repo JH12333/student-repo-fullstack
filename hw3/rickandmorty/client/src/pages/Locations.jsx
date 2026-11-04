@@ -1,6 +1,6 @@
-import useApi from '../hooks/useApi.js';
+import useApi from '../hooks/useApi';
 
-function Locations() {
+const Locations = function Locations() {
   const {
     data: groups,
     loading,
@@ -38,6 +38,6 @@ function Locations() {
       </table>
     </main>
   );
-}
+};
 
 export default Locations;

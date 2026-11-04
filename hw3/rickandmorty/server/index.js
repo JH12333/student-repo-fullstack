@@ -12,11 +12,27 @@ const sleep = (ms) =>
     setTimeout(resolve, ms);
   });
 
-function getLabel(value) {
+const getLabel = function getLabel(value) {
   return typeof value === 'string' && value.trim() ? value.trim() : 'Unknown';
-}
+};
 
-async function fetchPage(resource, page) {
+const fetchWithRetry = async function fetchWithRetry(url, retriesLeft = 2) {
+  const response = await fetch(url);
+
+  if (response.status === 429 && retriesLeft > 0) {
+    const seconds = Number(response.headers.get('retry-after'));
+    await sleep(seconds > 0 ? seconds * 1000 : 10000);
+    return fetchWithRetry(url, retriesLeft - 1);
+  }
+
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status}`);
+  }
+
+  return response.json();
+};
+
+const fetchPage = async function fetchPage(resource, page) {
   const key = `${resource}:${page}`;
 
   if (pageCache.has(key)) {
@@ -26,31 +42,20 @@ async function fetchPage(resource, page) {
   const request = requestQueue.then(async () => {
     await sleep(1200);
 
-    for (let attempt = 0; attempt < 3; attempt += 1) {
-      const response = await fetch(`${baseUrl}/${resource}?page=${page}`);
+    const data = await fetchWithRetry(`${baseUrl}/${resource}?page=${page}`);
 
-      if (response.status === 429 && attempt < 2) {
-        const seconds = Number(response.headers.get('retry-after'));
-
-        await sleep(seconds > 0 ? seconds * 1000 : 10000);
-        continue;
-      }
-
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (!Array.isArray(data.results) || !Number.isInteger(data.info?.pages)) {
-        throw new Error('Invalid API response');
-      }
-
-      return data;
+    if (!Array.isArray(data.results) || !Number.isInteger(data.info?.pages)) {
+      throw new Error('Invalid API response');
     }
+
+    return data;
   });
 
-  requestQueue = request.catch(() => {});
+  // Keep the queue alive even when an individual request fails.
+  requestQueue = request.then(
+    () => undefined,
+    () => undefined
+  );
   pageCache.set(key, request);
 
   try {
@@ -59,27 +64,30 @@ async function fetchPage(resource, page) {
     pageCache.delete(key);
     throw error;
   }
-}
+};
 
-async function fetchPages(resource, limit = Infinity) {
+const fetchPages = async function fetchPages(resource, limit = Infinity) {
   const firstPage = await fetchPage(resource, 1);
   const results = [...firstPage.results];
 
   for (let page = 2; page <= firstPage.info.pages && results.length < limit; page += 1) {
+    // Intentional sequential fetching to avoid API rate limits.
+    // eslint-disable-next-line no-await-in-loop
     const data = await fetchPage(resource, page);
     results.push(...data.results);
   }
 
   return results.slice(0, limit);
-}
+};
 
-function sendApiError(res, error) {
+const sendApiError = function sendApiError(res, error) {
+  // eslint-disable-next-line no-console
   console.error(error.message);
 
   res.status(502).json({
     error: 'External API unavailable or rate-limited. Please try later.',
   });
-}
+};
 
 app.get('/api/characters', async (req, res) => {
   try {
@@ -124,7 +132,6 @@ app.get('/api/species', async (req, res) => {
     }));
 
     result.sort((a, b) => a.species.localeCompare(b.species));
-
     res.json(result);
   } catch (error) {
     sendApiError(res, error);
@@ -147,7 +154,6 @@ app.get('/api/locations', async (req, res) => {
     }));
 
     result.sort((a, b) => b.count - a.count);
-
     res.json(result);
   } catch (error) {
     sendApiError(res, error);
@@ -155,5 +161,6 @@ app.get('/api/locations', async (req, res) => {
 });
 
 app.listen(port, () => {
+  // eslint-disable-next-line no-console
   console.log(`Server running at http://localhost:${port}`);
 });

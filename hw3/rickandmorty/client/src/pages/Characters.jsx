@@ -1,6 +1,6 @@
-import useApi from '../hooks/useApi.js';
+import useApi from '../hooks/useApi';
 
-function Characters() {
+const Characters = function Characters() {
   const {
     data: characters,
     loading,
@@ -46,6 +46,6 @@ function Characters() {
       </div>
     </main>
   );
-}
+};
 
 export default Characters;

@@ -1,6 +1,6 @@
-import useApi from '../hooks/useApi.js';
+import useApi from '../hooks/useApi';
 
-function Species() {
+const Species = function Species() {
   const {
     data: groups,
     loading,
@@ -39,6 +39,6 @@ function Species() {
       </div>
     </main>
   );
-}
+};
 
 export default Species;

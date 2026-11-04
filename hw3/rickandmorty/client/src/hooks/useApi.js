@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
-export default function useApi(url) {
+const useApi = function useApi(url) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const controller = new AbortController();
 
-    async function load() {
+    const load = async function load() {
       try {
         const response = await fetch(url, {
           signal: controller.signal,
@@ -24,7 +24,7 @@ export default function useApi(url) {
           setError(err.message);
         }
       }
-    }
+    };
 
     load();
 
@@ -36,4 +36,6 @@ export default function useApi(url) {
     error,
     loading: data === null && !error,
   };
-}
+};
+
+export default useApi;

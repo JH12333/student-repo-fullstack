@@ -1,4 +1,4 @@
-function Home() {
+const Home = function Home() {
   return (
     <main>
       <h1>Rick and Morty Explorer</h1>
@@ -8,6 +8,6 @@ function Home() {
       </p>
     </main>
   );
-}
+};
 
 export default Home;

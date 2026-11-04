@@ -5,12 +5,12 @@ import {
   Routes,
 } from 'react-router';
 
-import Home from './pages/Home.jsx';
-import Characters from './pages/Characters.jsx';
-import Species from './pages/Species.jsx';
-import Locations from './pages/Locations.jsx';
+import Home from './pages/Home';
+import Characters from './pages/Characters';
+import Species from './pages/Species';
+import Locations from './pages/Locations';
 
-function App() {
+const App = function App() {
   return (
     <>
       <nav>
@@ -30,6 +30,6 @@ function App() {
       </Routes>
     </>
   );
-}
+};
 
 export default App;
