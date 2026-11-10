@@ -7,10 +7,9 @@ const baseUrl = 'https://rickandmortyapi.com/api';
 const pageCache = new Map();
 let requestQueue = Promise.resolve();
 
-const sleep = (ms) =>
-  new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
+const sleep = (ms) => new Promise((resolve) => {
+  setTimeout(resolve, ms);
+});
 
 const getLabel = function getLabel(value) {
   return typeof value === 'string' && value.trim() ? value.trim() : 'Unknown';
@@ -54,7 +53,7 @@ const fetchPage = async function fetchPage(resource, page) {
   // Keep the queue alive even when an individual request fails.
   requestQueue = request.then(
     () => undefined,
-    () => undefined
+    () => undefined,
   );
   pageCache.set(key, request);
 
@@ -100,7 +99,7 @@ app.get('/api/characters', async (req, res) => {
         image: character?.image || null,
         species: getLabel(character?.species),
         status: getLabel(character?.status),
-      }))
+      })),
     );
   } catch (error) {
     sendApiError(res, error);
